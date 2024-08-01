@@ -17,11 +17,14 @@ import java.util.Objects;
 @RequestMapping("/spl")
 public class APIController {
 
-    @Value("${dgeHost:http://localhost:8080/}")
-    private String dgeHost;
+    @Value("${dgeUserHost:http://localhost:8080/}")
+    private String dgeUserHost;
 
-    private String USER_SERVICE_URL = dgeHost + "/dge/users/";
-    private String BALANCE_SERVICE_URL = dgeHost + "/dge/balances/";
+    @Value("${dgeBalanceHost:http://localhost:8080/}")
+    private String dgeBalanceHost;
+
+    private String USER_SERVICE_URL = dgeUserHost + "/dge/users/";
+    private String BALANCE_SERVICE_URL = dgeBalanceHost + "/dge/balances/";
 
     @Autowired
     private RestTemplate restTemplate;
