@@ -11,4 +11,4 @@ COPY target/demo-0.0.1-SNAPSHOT.jar /app/app1.jar
 EXPOSE 8080
 
 # Run the application
-CMD ["java", "-jar", "app1.jar", "-DDGE-BALANCE-HOST=\"http://ocpdgeservice2-oc-test.apps-crc.testing\"", "-DDGE-USER-HOST=\"http://ocpdgeservice1-oc-test.apps-crc.testing\""]
+CMD ["java", "-jar", "app1.jar", "-Dage-BALANCE-HOST=\"http://ocpageservice2-oc-test.apps-crc.testing\"", "-Dage-USER-HOST=\"http://ocpageservice1-oc-test.apps-crc.testing\""]
