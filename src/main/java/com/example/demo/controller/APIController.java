@@ -17,14 +17,11 @@ import java.util.Objects;
 @RequestMapping("/spl")
 public class APIController {
 
-    @Value("${dgeUserHost:http://localhost:8080/}")
+    @Value("${dgeUserHost:http://ocpdgeservice1-oc-test.apps-crc.testing}")
     private String dgeUserHost;
 
-    @Value("${dgeBalanceHost:http://localhost:8080/}")
+    @Value("${dgeBalanceHost:http://ocpdgeservice1-oc-test.apps-crc.testing}")
     private String dgeBalanceHost;
-
-    private String USER_SERVICE_URL = dgeUserHost + "/dge/users/";
-    private String BALANCE_SERVICE_URL = dgeBalanceHost + "/dge/balances/";
 
     @Autowired
     private RestTemplate restTemplate;
@@ -36,13 +33,17 @@ public class APIController {
         user.setName(userInfo.getName());
         user.setEmail(userInfo.getEmail());
 
-        ResponseEntity<User> userResponse = restTemplate.postForEntity(USER_SERVICE_URL, user, User.class);
+        System.out.println(dgeUserHost + "/dge/users");
+
+        ResponseEntity<User> userResponse = restTemplate.postForEntity(dgeUserHost + "/dge/users", user, User.class);
 
         Balance balance = new Balance();
         balance.setUserId(Objects.requireNonNull(userResponse.getBody()).getId());
         balance.setAmount(userInfo.getAmount());
+
+        userInfo.setId(userResponse.getBody().getId());
         ResponseEntity<Balance> balanceResponse = restTemplate.postForEntity(
-                BALANCE_SERVICE_URL + userInfo.getAmount() + "/update", balance, Balance.class);
+                dgeBalanceHost + "/dge/balances/" + userResponse.getBody().getId() + "/update", balance, Balance.class);
 
         return new ResponseEntity<>(userInfo, HttpStatus.ACCEPTED);
     }
@@ -50,9 +51,9 @@ public class APIController {
     @GetMapping("/fetchUser")
     public ResponseEntity<UserInfo> fetchUser(@RequestParam Long userId) {
 
-        ResponseEntity<User> userResponse = restTemplate.getForEntity(USER_SERVICE_URL + userId, User.class);
+        ResponseEntity<User> userResponse = restTemplate.getForEntity(dgeUserHost + "/dge/users/" + userId, User.class);
 
-        ResponseEntity<Balance> balanceResponse = restTemplate.getForEntity(BALANCE_SERVICE_URL + userId, Balance.class);
+        ResponseEntity<Balance> balanceResponse = restTemplate.getForEntity(dgeBalanceHost + "/dge/balances/" + userId, Balance.class);
 
         UserInfo userInfo = new UserInfo();
         userInfo.setId(userId);
